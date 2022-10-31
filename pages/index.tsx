@@ -1,7 +1,12 @@
 import Head from 'next/head';
 import { Heading, Center } from '@chakra-ui/react';
+import { useSession } from 'next-auth/react';
 
 function Home() {
+  const { data: session } = useSession();
+
+  const name = session?.user.profile.firstName;
+
   return (
     <>
       <Head>

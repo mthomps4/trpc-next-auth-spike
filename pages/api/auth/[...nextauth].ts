@@ -1,7 +1,7 @@
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import { PrismaClient, Role } from '@prisma/client';
+import { PrismaClient, Role, User } from '@prisma/client';
 import { prisma } from 'lib/prisma';
 import { comparePasswords, hashPassword } from 'services/auth';
 
@@ -23,7 +23,8 @@ export const authOptions: NextAuthOptions = {
       // e.g. domain, username, password, 2FA token, etc.
       // You can pass any HTML attribute to the <input> tag through the object.
       credentials: {
-        name: { label: 'Name', type: 'text' },
+        firstName: { label: 'Name', type: 'text' },
+        lastName: { label: 'Name', type: 'text' },
         email: { label: 'Email', type: 'text', placeholder: 'user@domain.com' },
         password: { label: 'Password', type: 'password' },
         confirmPassword: { label: 'Confirm Password', type: 'password' },
@@ -48,7 +49,12 @@ export const authOptions: NextAuthOptions = {
 
           const newUser = await prisma.user.create({
             data: {
-              name: credentials.name,
+              profile: {
+                create: {
+                  firstName: credentials.firstName || '',
+                  lastName: credentials.firstName || '',
+                },
+              },
               email: credentials.email,
               password: hashedPassword,
               roles: [Role.USER],
@@ -75,19 +81,25 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token }) {
       // lookup user to ensure info is up to date
-      const dbUser = await prisma.user.findUnique({ where: { id: token.sub } });
+      const dbUser = await prisma.user.findUnique({
+        where: { id: token.sub },
+        include: { profile: true },
+      });
 
-      if (dbUser) {
-        return { ...token, roles: dbUser.roles, name: dbUser.name };
+      if (!dbUser) {
+        throw new Error('User Not Found!');
       }
 
-      token.roles = [Role.USER];
+      token.user = dbUser;
 
       return token;
     },
     async session({ session, token }) {
       // fill in session user from the token above
-      session.user.roles = token.roles as Role[];
+      // TODO: TUESDAY SESSION -- Types for Profile missing?!
+      session.user = token.user as User;
+      session.isAdmin = token.user.roles.includes(Role.ADMIN);
+      session.profile = token.user.profile;
 
       return session;
     },
