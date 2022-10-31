@@ -27,10 +27,8 @@ export function AllProviders({ pageProps = {}, children }: Props) {
   const colorModeManager =
     typeof cookies === 'string' ? cookieStorageManagerSSR(cookies) : localStorageManager;
 
-  console.log({ cookies, session });
-
   return (
-    <ChakraProvider theme={defaultTheme}>
+    <ChakraProvider theme={defaultTheme} colorModeManager={colorModeManager}>
       <ReactQueryDevtools initialIsOpen={false} />
       <SessionProvider session={session}>
         <CSSReset />

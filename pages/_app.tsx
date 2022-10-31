@@ -1,7 +1,6 @@
 import { Session } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import { ErrorBoundary } from 'react-error-boundary';
-
 import React from 'react';
 import type { AppProps as NextAppProps } from 'next/app';
 
@@ -12,7 +11,7 @@ import { LoggedOutLayout } from '@/layouts/LoggedOut';
 // import '@fontsource/inter/variable.css';
 import { trpc } from '@/utils/trpc';
 
-type CustomAppProps = {
+export type CustomAppProps = {
   cookies: string;
   session: Session;
 };

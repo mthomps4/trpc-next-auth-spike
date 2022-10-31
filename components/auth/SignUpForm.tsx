@@ -88,8 +88,8 @@ export function SignUpForm() {
           ) : null}
         </FormControl>
         <PasswordField
-          id="Password"
-          label="Password"
+          id="password"
+          label="password"
           isInvalid={Boolean(isSubmitted && errors.password)}
           autoComplete="new-password"
           {...register('password', {
@@ -105,8 +105,8 @@ export function SignUpForm() {
           ) : null}
         </PasswordField>
         <PasswordField
-          id="Confirm-Password"
-          label="Confirm Password"
+          id="confirmPassword"
+          label="confirm password"
           isInvalid={Boolean(isSubmitted && errors.confirmPassword)}
           autoComplete="new-password"
           {...register('confirmPassword', {
