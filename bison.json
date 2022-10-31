@@ -1,0 +1,21 @@
+{
+  "name": "trpc-next-auth",
+  "bisonVersion": "1.13.0-canary.3",
+  "_": [],
+  "$0": "cli.js",
+  "db": {
+    "dev": {
+      "name": "trpc-next-auth_dev",
+      "user": "postgres",
+      "password": "",
+      "host": "localhost",
+      "port": "5432"
+    },
+    "test": {
+      "name": "trpc-next-auth_test"
+    }
+  },
+  "host": {
+    "name": "vercel"
+  }
+}

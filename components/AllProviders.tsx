@@ -1,6 +1,5 @@
 import { SessionProvider } from 'next-auth/react';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-
 import { ReactNode } from 'react';
 import {
   ChakraProvider,
@@ -15,21 +14,23 @@ import { AppProps } from '@/pages/_app';
 
 type Props = {
   /** pageProps from pages/_app.tsx */
-  pageProps?: AppProps['pageProps'];
+  pageProps: AppProps['pageProps'];
   children: ReactNode;
 };
 
 /**
  * Renders all context providers
  */
-export function AllProviders({ pageProps, children }: Props) {
+export function AllProviders({ pageProps = {}, children }: Props) {
   const { cookies, session } = pageProps;
 
   const colorModeManager =
     typeof cookies === 'string' ? cookieStorageManagerSSR(cookies) : localStorageManager;
 
+  console.log({ cookies, session });
+
   return (
-    <ChakraProvider theme={defaultTheme} colorModeManager={colorModeManager}>
+    <ChakraProvider theme={defaultTheme}>
       <ReactQueryDevtools initialIsOpen={false} />
       <SessionProvider session={session}>
         <CSSReset />

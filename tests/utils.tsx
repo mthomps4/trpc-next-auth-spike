@@ -1,5 +1,4 @@
 import { createTRPCReact, loggerLink } from '@trpc/react-query';
-
 import { useState } from 'react';
 import '@testing-library/jest-dom';
 import { render as defaultRender } from '@testing-library/react';
@@ -11,7 +10,7 @@ import '@testing-library/jest-dom/extend-expect';
 
 import { AllProviders } from '@/components/AllProviders';
 import type { AppRouter } from '@/server/routers/_app';
-import { AppProps } from '@/pages/_app';
+// import { AppProps } from '@/pages/_app';
 
 export const trpc = createTRPCReact<AppRouter>();
 
@@ -34,11 +33,16 @@ export function render(ui: RenderUI, { router = {}, ...options }: RenderOptions 
         })
       );
 
+      const ProviderPageProps = {
+        cookies: 'string',
+        session: null,
+      };
+
       return (
         <RouterContext.Provider value={{ ...mockRouter, ...router }}>
           <trpc.Provider client={trpcClient} queryClient={queryClient}>
             <QueryClientProvider client={queryClient}>
-              <AllProviders>{children}</AllProviders>
+              <AllProviders pageProps={ProviderPageProps}>{children}</AllProviders>
             </QueryClientProvider>
           </trpc.Provider>
         </RouterContext.Provider>
