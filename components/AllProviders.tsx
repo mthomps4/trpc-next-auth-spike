@@ -29,7 +29,7 @@ type Props = {
 function AppWithAuth({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
 
-  if (session) return <LoggedInLayout>{children}</LoggedInLayout>;
+  if (session?.user) return <LoggedInLayout>{children}</LoggedInLayout>;
 
   return <LoggedOutLayout>{children}</LoggedOutLayout>;
 }

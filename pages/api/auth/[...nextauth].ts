@@ -115,6 +115,8 @@ export const authOptions: NextAuthOptions = {
       session.user = sessionUser;
       const roles = token?.user?.roles || [];
       session.isAdmin = roles.includes(Role.ADMIN);
+      session.idToken = token.idToken;
+      session.accessToken = token.accessToken;
 
       return session;
     },

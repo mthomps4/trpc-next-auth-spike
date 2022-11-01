@@ -8,9 +8,7 @@
 import '@testing-library/cypress/add-commands';
 
 import { Prisma, User } from '@prisma/client';
-
-import { LOGIN_TOKEN_KEY } from '@/constants';
-import { LoginTaskObject } from '@/cypress/plugins';
+import { NextAuthSession } from '@/cypress/plugins';
 
 declare global {
   namespace Cypress {
@@ -25,13 +23,19 @@ declare global {
  *  Handles logging a user in via email and password.
  *  This should be used to login in future e2e tests instead of the login form.
  */
-function login(attrs: Pick<User, 'email' | 'password'>) {
-  const { email, password } = attrs;
-  return cy
-    .task<LoginTaskObject>('login', { email, password })
-    .then(({ token }) => {
-      return cy.setCookie(LOGIN_TOKEN_KEY, token).then(() => token);
-    });
+
+function login(user: NextAuthSession['user']) {
+  return cy.task<NextAuthSession>('mockValidSession', { user }).then((session) => {
+    cy.intercept('/api/auth/session', { body: session, statusCode: 200 }).as('session');
+
+    cy.intercept('/api/auth/callback/credentials?', {
+      fixture: 'credentials_success.json',
+    }).as('credentials');
+
+    cy.wait('@session');
+
+    return session;
+  });
 }
 
 /**
@@ -44,9 +48,12 @@ function createUserAndLogin(args: Partial<Prisma.UserCreateInput> = {}) {
     password: args?.password || 'abcd1234',
   };
 
-  return cy.task<User>('factory', { name: 'User', attrs }).then((user) => {
-    return login({ email: user.email, password: attrs.password }).then(() => user);
-  });
+  return cy.task<NextAuthSession['user']>('factory', { name: 'User', attrs }).then((user) =>
+    cy.login(user).then((session) => ({
+      session,
+      user,
+    }))
+  );
 }
 
 Cypress.Commands.add('login', login);

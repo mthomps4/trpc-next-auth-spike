@@ -23,9 +23,11 @@ declare module 'next-auth' {
   interface Session {
     // Should Pick<> or Omit<> what we expect here.
     user: Partial<User> & {
-      profile: Partial<Profile> | null;
+      profile?: Partial<Profile>;
     };
     isAdmin: boolean;
+    idToken?: string;
+    accessToken?: string;
   }
 }
 Copy;
