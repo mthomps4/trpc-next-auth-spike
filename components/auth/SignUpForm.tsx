@@ -19,6 +19,12 @@ import { Link } from '@/components/Link';
 import { PasswordField } from '@/components/auth/PasswordField';
 import { EMAIL_REGEX, MIN_PASSWORD_LENGTH } from '@/constants';
 
+export interface SignUpFormData extends LoginFormData {
+  firstName: string;
+  lastName: string;
+  confirmPassword: string;
+}
+
 export function SignUpForm() {
   const {
     register,
@@ -157,10 +163,4 @@ export function SignUpForm() {
       </Flex>
     </Stack>
   );
-}
-
-export interface SignUpFormData extends LoginFormData {
-  firstName: string;
-  lastName: string;
-  confirmPassword: string;
 }

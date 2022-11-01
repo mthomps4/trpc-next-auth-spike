@@ -9,8 +9,9 @@ declare module 'next-auth/jwt' {
     idToken?: string;
     // For OAuth Refresh
     accessToken?: string;
-    user: User & {
-      profile: Profile | null;
+    // Match Selects
+    user: Partial<User> & {
+      profile: Partial<Profile> | null;
     };
   }
 }
@@ -20,8 +21,9 @@ declare module 'next-auth' {
    * Returned by `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
    */
   interface Session {
-    user: User & {
-      profile: Profile | null;
+    // Match Selects
+    user: Partial<User> & {
+      profile: Partial<Profile> | null;
     };
     isAdmin: boolean;
   }

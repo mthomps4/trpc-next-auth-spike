@@ -8,7 +8,7 @@ import { trpc } from '@/utils/trpc';
 
 export type CustomAppProps = {
   cookies: string;
-  session: Session;
+  session: Session | null | undefined; // Account for anonymous first time users
 };
 
 export type AppProps = NextAppProps<CustomAppProps>;

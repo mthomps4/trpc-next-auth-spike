@@ -51,7 +51,29 @@ describe('SignUpForm', () => {
 
   describe('Successful Signup', () => {
     it('routes a user to the home page', async () => {
-      const a = 2;
+      const { getByLabelText, getAllByLabelText, getByText, findByText } = render(<SignUpForm />);
+      const firstNameInput = getByLabelText(/first name/i);
+      userEvent.type(firstNameInput, 'Barry');
+
+      const lastNameInput = getByLabelText(/last name/i);
+      userEvent.type(lastNameInput, 'Allen');
+
+      const emailInput = getByLabelText(/email/i);
+      userEvent.type(emailInput, 'ballen@speedforce.net');
+
+      // get by label picks up on both password fields
+      const passwordInput = getAllByLabelText(/password/i)[0];
+      userEvent.type(passwordInput, 'pw');
+
+      const confirmPasswordInput = getByLabelText(/confirm password/i);
+      userEvent.type(confirmPasswordInput, 'ballen@speedforce.net');
+
+      const submitButton = getByText(/sign up/i);
+      userEvent.click(submitButton);
+
+      const welcome = await findByText('Welcome, Barry!');
+
+      expect(welcome).toBeInTheDocument();
     });
   });
 });

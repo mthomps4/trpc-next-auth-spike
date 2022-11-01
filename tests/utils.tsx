@@ -8,8 +8,8 @@ import fetch from 'cross-fetch';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '@testing-library/jest-dom/extend-expect';
 import '@/tests/matchMedia.mock';
-import { Role } from '@prisma/client';
-import { Session } from 'next-auth';
+// import { Role } from '@prisma/client';
+// import { Session } from 'next-auth';
 
 import { AllProviders } from '@/components/AllProviders';
 import type { AppRouter } from '@/server/routers/_app';
@@ -22,10 +22,23 @@ globalThis.fetch = fetch;
 export * from '@testing-library/react';
 export { default as userEvent } from '@testing-library/user-event';
 
-const mockSession: Session = {
-  expires: new Date(Date.now() + 2 * 86400).toISOString(),
-  user: { roles: [Role.ADMIN], name: 'Peter Parker', email: 'peter@web.net' },
-};
+// const mockSession: Session = {
+//   expires: new Date(Date.now() + 2 * 86400).toISOString(),
+//   isAdmin: true,
+//   user: {
+//     roles: [Role.ADMIN],
+//     email: 'peter@web.net',
+//     profile: {
+//       id: '1',
+//       firstName: 'Peter',
+//       lastName: 'Parker',
+//       userId: '1',
+//       image: null,
+//       createdAt: new Date(),
+//       updatedAt: new Date(),
+//     },
+//   },
+// };
 
 // https://github.com/nextauthjs/next-auth/discussions/4185
 // TODO: Should this be a helper util?
@@ -58,7 +71,7 @@ export function render(ui: RenderUI, { router = {}, ...options }: RenderOptions 
       // TODO: should we mock this? or the useSession mock above?
       const ProviderPageProps: CustomAppProps = {
         cookies: 'string',
-        session: mockSession,
+        session: null,
       };
 
       return (
