@@ -31,10 +31,11 @@ export const authOptions: NextAuthOptions = {
         signUp: { label: 'Sign Up', type: 'button' },
       },
       async authorize(credentials) {
-        if (!credentials) return null;
+        if (!credentials || !credentials.email) return null;
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email.toLocaleLowerCase() },
+          include: { profile: true },
         });
 
         if (credentials.signUp === 'true') {
@@ -52,13 +53,14 @@ export const authOptions: NextAuthOptions = {
               profile: {
                 create: {
                   firstName: credentials.firstName || '',
-                  lastName: credentials.firstName || '',
+                  lastName: credentials.lastName || '',
                 },
               },
               email: credentials.email,
               password: hashedPassword,
               roles: [Role.USER],
             },
+            include: { profile: true },
           });
 
           return newUser;
@@ -104,6 +106,7 @@ export const authOptions: NextAuthOptions = {
         updatedAt: undefined,
         password: undefined,
         profile: {
+          ...token.user.profile,
           createdAt: undefined,
           updatedAt: undefined,
         },

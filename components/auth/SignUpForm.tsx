@@ -8,10 +8,12 @@ import {
   Input,
   Stack,
   Text,
+  useToast,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/router';
 
 import { LoginFormData } from './LoginForm';
 
@@ -33,6 +35,8 @@ export function SignUpForm() {
     formState: { errors, isValid, isSubmitted },
   } = useForm<SignUpFormData>({ mode: 'onChange' });
 
+  const toast = useToast();
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   async function onSubmit({
@@ -55,10 +59,30 @@ export function SignUpForm() {
 
     setLoading(true);
 
-    const asdf = await signIn('credentials', payload);
-    console.log({ asdf });
-
+    // https://next-auth.js.org/getting-started/client#using-the-redirect-false-option
+    const response = await signIn('credentials', { redirect: false, ...payload });
     setLoading(false);
+
+    if (response) {
+      const {
+        error,
+        ok,
+        // status,
+        url: redirectUrl, // null if error
+      } = response;
+
+      if (error) {
+        return toast({ status: 'error', isClosable: true, title: `Error`, description: error });
+      }
+
+      if (ok && redirectUrl) {
+        toast({ status: 'success', isClosable: true, title: `Welcome, ${firstName}!` });
+
+        return router.push('/');
+      }
+
+      return;
+    }
   }
 
   return (
