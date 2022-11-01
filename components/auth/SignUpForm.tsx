@@ -55,7 +55,8 @@ export function SignUpForm() {
 
     setLoading(true);
 
-    await signIn('credentials', payload);
+    const asdf = await signIn('credentials', payload);
+    console.log({ asdf });
 
     setLoading(false);
   }
@@ -71,7 +72,7 @@ export function SignUpForm() {
       </Flex>
       <Stack spacing="5">
         <FormControl isInvalid={Boolean(isSubmitted && errors.firstName)}>
-          <FormLabel htmlFor="name">First Name</FormLabel>
+          <FormLabel htmlFor="firstName">First Name</FormLabel>
           <Input
             id="firstName"
             type="text"
@@ -84,7 +85,7 @@ export function SignUpForm() {
           ) : null}
         </FormControl>
         <FormControl isInvalid={Boolean(isSubmitted && errors.lastName)}>
-          <FormLabel htmlFor="name">Last Name</FormLabel>
+          <FormLabel htmlFor="lastName">Last Name</FormLabel>
           <Input
             id="lastName"
             type="text"

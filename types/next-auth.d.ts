@@ -9,9 +9,9 @@ declare module 'next-auth/jwt' {
     idToken?: string;
     // For OAuth Refresh
     accessToken?: string;
-    // Match Selects
-    user: Partial<User> & {
-      profile: Partial<Profile> | null;
+    // Match Prisma Return
+    user: User & {
+      profile: Profile | null;
     };
   }
 }
@@ -21,7 +21,7 @@ declare module 'next-auth' {
    * Returned by `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
    */
   interface Session {
-    // Match Selects
+    // Should Pick<> or Omit<> what we expect here.
     user: Partial<User> & {
       profile: Partial<Profile> | null;
     };

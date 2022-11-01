@@ -1,4 +1,4 @@
-import NextAuth, { NextAuthOptions } from 'next-auth';
+import NextAuth, { NextAuthOptions, Session } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { PrismaClient, Role } from '@prisma/client';
@@ -96,8 +96,22 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       // fill in session user from the token above
-      session.user = token.user;
-      session.isAdmin = token.user.roles.includes(Role.ADMIN);
+
+      // Drop fields we don't want client side...
+      const sessionUser: Session['user'] = {
+        ...token.user,
+        createdAt: undefined,
+        updatedAt: undefined,
+        password: undefined,
+        profile: {
+          createdAt: undefined,
+          updatedAt: undefined,
+        },
+      };
+
+      session.user = sessionUser;
+      const roles = token?.user?.roles || [];
+      session.isAdmin = roles.includes(Role.ADMIN);
 
       return session;
     },
