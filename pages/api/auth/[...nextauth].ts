@@ -1,7 +1,7 @@
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import { PrismaClient, Role, User } from '@prisma/client';
+import { PrismaClient, Role } from '@prisma/client';
 import { prisma } from 'lib/prisma';
 import { comparePasswords, hashPassword } from 'services/auth';
 
@@ -96,10 +96,8 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       // fill in session user from the token above
-      // TODO: TUESDAY SESSION -- Types for Profile missing?!
-      session.user = token.user as User;
+      session.user = token.user;
       session.isAdmin = token.user.roles.includes(Role.ADMIN);
-      session.profile = token.user.profile;
 
       return session;
     },
