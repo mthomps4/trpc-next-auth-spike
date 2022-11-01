@@ -10,8 +10,8 @@ describe('SignUpForm', () => {
     expect(() => render(<SignUpForm />)).not.toThrowError();
   });
 
-  describe('email validation', () => {
-    it('shows errors when invalid', async () => {
+  describe('Validation', () => {
+    it('shows errors when email invalid', async () => {
       const { getByLabelText, getByText } = render(<SignUpForm />);
 
       // update email
@@ -28,10 +28,8 @@ describe('SignUpForm', () => {
 
       await waitFor(() => expect(emailInput).not.toHaveAttribute('aria-invalid', 'true'));
     });
-  });
 
-  describe('password validation', () => {
-    it('shows errors when invalid', async () => {
+    it('shows errors when password invalid', async () => {
       const { getAllByLabelText, getByText } = render(<SignUpForm />);
 
       // update password
@@ -48,6 +46,12 @@ describe('SignUpForm', () => {
       userEvent.type(passwordInput, 'ihave8characters');
 
       await waitFor(() => expect(passwordInput).not.toHaveAttribute('aria-invalid', 'true'));
+    });
+  });
+
+  describe('Successful Signup', () => {
+    it('routes a user to the home page', async () => {
+      const a = 2;
     });
   });
 });

@@ -29,11 +29,18 @@ export function SignUpForm() {
 
   const [loading, setLoading] = useState(false);
 
-  async function onSubmit({ name, email, password, confirmPassword }: SignUpFormData) {
+  async function onSubmit({
+    firstName,
+    lastName,
+    email,
+    password,
+    confirmPassword,
+  }: SignUpFormData) {
     if (!isValid || loading) return;
 
     const payload = {
-      name,
+      firstName,
+      lastName,
       email,
       password,
       confirmPassword,
@@ -57,17 +64,30 @@ export function SignUpForm() {
         </Text>
       </Flex>
       <Stack spacing="5">
-        <FormControl isInvalid={Boolean(isSubmitted && errors.name)}>
-          <FormLabel htmlFor="name">Name</FormLabel>
+        <FormControl isInvalid={Boolean(isSubmitted && errors.firstName)}>
+          <FormLabel htmlFor="name">First Name</FormLabel>
           <Input
-            id="name"
+            id="firstName"
             type="text"
-            {...register('name', {
-              required: 'Name is required.',
+            {...register('firstName', {
+              required: 'First Name is required.',
             })}
           />
-          {isSubmitted && errors.name ? (
-            <FormErrorMessage>{errors.name.message}</FormErrorMessage>
+          {isSubmitted && errors.firstName ? (
+            <FormErrorMessage>{errors.firstName.message}</FormErrorMessage>
+          ) : null}
+        </FormControl>
+        <FormControl isInvalid={Boolean(isSubmitted && errors.lastName)}>
+          <FormLabel htmlFor="name">Last Name</FormLabel>
+          <Input
+            id="lastName"
+            type="text"
+            {...register('lastName', {
+              required: 'Last Name is required.',
+            })}
+          />
+          {isSubmitted && errors.lastName ? (
+            <FormErrorMessage>{errors.lastName.message}</FormErrorMessage>
           ) : null}
         </FormControl>
         <FormControl isInvalid={Boolean(isSubmitted && errors.email)}>
@@ -140,6 +160,7 @@ export function SignUpForm() {
 }
 
 export interface SignUpFormData extends LoginFormData {
-  name: string;
+  firstName: string;
+  lastName: string;
   confirmPassword: string;
 }

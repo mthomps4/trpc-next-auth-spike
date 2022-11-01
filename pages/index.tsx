@@ -7,7 +7,7 @@ function Home() {
 
   const name = session?.user?.profile?.firstName;
 
-  const welcomeMsg = name ? `Welcome, ${name}` : 'Welcome!';
+  const welcomeMsg = name ? `Welcome, ${name}` : 'Welcome, Guest!';
 
   return (
     <>
