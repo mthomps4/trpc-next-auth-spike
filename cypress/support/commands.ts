@@ -7,14 +7,24 @@
 
 import '@testing-library/cypress/add-commands';
 
-import { Prisma, User } from '@prisma/client';
-import { NextAuthSession } from '@/cypress/plugins';
+import { Prisma, Profile, Role, User } from '@prisma/client';
+import { Session } from 'next-auth';
 
 declare global {
+  type PrismaUser = User & { roles: Role[]; profile: Profile | null };
+
+  // see next-auth.d.ts
+  interface NextAuthSession extends Session {
+    user: PrismaUser;
+    isAdmin: boolean;
+    idToken?: string;
+    accessToken?: string;
+  }
+
   namespace Cypress {
     interface Chainable {
-      login: typeof login;
-      createUserAndLogin: typeof createUserAndLogin;
+      login(user: NextAuthSession['user']): Chainable<NextAuthSession>;
+      createUserAndLogin(args?: Partial<Prisma.UserCreateInput>): Chainable<NextAuthSession>;
     }
   }
 }
@@ -24,7 +34,7 @@ declare global {
  *  This should be used to login in future e2e tests instead of the login form.
  */
 
-function login(user: NextAuthSession['user']) {
+const login = (user: PrismaUser) => {
   return cy.task<NextAuthSession>('mockValidSession', { user }).then((session) => {
     cy.intercept('/api/auth/session', { body: session, statusCode: 200 }).as('session');
 
@@ -32,29 +42,24 @@ function login(user: NextAuthSession['user']) {
       fixture: 'credentials_success.json',
     }).as('credentials');
 
-    cy.wait('@session');
-
-    return session;
+    // Make this "Chainable"
+    return Promise.resolve(session);
   });
-}
-
+};
 /**
  *  Handles creating and logging in a user with a set of attributes
  *  This should be used to login in future e2e tests instead of the login form.
  */
-function createUserAndLogin(args: Partial<Prisma.UserCreateInput> = {}) {
+const createUserAndLogin = (args: Partial<Prisma.UserCreateInput> = {}) => {
   const attrs = {
     ...args,
     password: args?.password || 'abcd1234',
   };
 
-  return cy.task<NextAuthSession['user']>('factory', { name: 'User', attrs }).then((user) =>
-    cy.login(user).then((session) => ({
-      session,
-      user,
-    }))
-  );
-}
+  return cy
+    .task<NextAuthSession['user']>('factory', { name: 'User', attrs })
+    .then((user) => cy.login(user));
+};
 
 Cypress.Commands.add('login', login);
 Cypress.Commands.add('createUserAndLogin', createUserAndLogin);

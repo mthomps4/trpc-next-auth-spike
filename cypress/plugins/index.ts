@@ -1,22 +1,9 @@
 import path from 'path';
 
-import { User, Profile, Role } from '@prisma/client';
+import { User, Profile, Role, Prisma } from '@prisma/client';
 
 import { resetDB, disconnect, setupDB } from '@/tests/helpers';
 import * as Factories from '@/tests/factories';
-import { Session } from 'next-auth';
-
-// see next-auth.d.types
-export interface NextAuthSession extends Session {
-  // Should Pick<> or Omit<> what we expect here.
-  user: Partial<User> & {
-    roles: Role[];
-    profile?: Partial<Profile>;
-  };
-  isAdmin: boolean;
-  idToken?: string;
-  accessToken?: string;
-}
 
 type FactoryNames = keyof typeof Factories extends `${infer T}Factory` ? T : never;
 
@@ -65,5 +52,29 @@ export const setupNodeEvents: Cypress.ConfigOptions['setupNodeEvents'] = (on, _c
         accessToken: 'accessToken',
       };
     },
+    // login: (user: User & { profile?: Profile }) => {
+    //   cy.task<NextAuthSession>('mockValidSession', { user }).then((session) => {
+    //     cy.intercept('/api/auth/session', { body: session, statusCode: 200 }).as('session');
+
+    //     cy.intercept('/api/auth/callback/credentials?', {
+    //       fixture: 'credentials_success.json',
+    //     }).as('credentials');
+
+    //     cy.wait('@session');
+
+    //     return session;
+    //   });
+    // },
+    // createUserAndLogin: (args: Partial<Prisma.UserCreateInput> = {}) => {
+    //   const attrs = {
+    //     ...args,
+    //     password: args?.password || 'abcd1234',
+    //   };
+
+    //   return cy
+    //     .task<User & { profile?: Profile }>('factory', { name: 'User', attrs })
+    //     .then((user) => cy.task('login', user))
+    //     .then((session) => session);
+    // },
   });
 };
