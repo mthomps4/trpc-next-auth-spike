@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { User, Profile, Role, Prisma } from '@prisma/client';
+import { Role } from '@prisma/client';
 
 import { resetDB, disconnect, setupDB } from '@/tests/helpers';
 import * as Factories from '@/tests/factories';
@@ -52,29 +52,5 @@ export const setupNodeEvents: Cypress.ConfigOptions['setupNodeEvents'] = (on, _c
         accessToken: 'accessToken',
       };
     },
-    // login: (user: User & { profile?: Profile }) => {
-    //   cy.task<NextAuthSession>('mockValidSession', { user }).then((session) => {
-    //     cy.intercept('/api/auth/session', { body: session, statusCode: 200 }).as('session');
-
-    //     cy.intercept('/api/auth/callback/credentials?', {
-    //       fixture: 'credentials_success.json',
-    //     }).as('credentials');
-
-    //     cy.wait('@session');
-
-    //     return session;
-    //   });
-    // },
-    // createUserAndLogin: (args: Partial<Prisma.UserCreateInput> = {}) => {
-    //   const attrs = {
-    //     ...args,
-    //     password: args?.password || 'abcd1234',
-    //   };
-
-    //   return cy
-    //     .task<User & { profile?: Profile }>('factory', { name: 'User', attrs })
-    //     .then((user) => cy.task('login', user))
-    //     .then((session) => session);
-    // },
   });
 };
