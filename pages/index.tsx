@@ -1,7 +1,15 @@
 import Head from 'next/head';
 import { Heading, Center } from '@chakra-ui/react';
+import { useSession } from 'next-auth/react';
 
 function Home() {
+  // TODO: replace w/ ME query for testing
+  const { data: session } = useSession();
+
+  const name = session?.user?.profile?.firstName;
+
+  const welcomeMsg = name ? `Welcome, ${name}!` : 'Welcome, Guest!';
+
   return (
     <>
       <Head>
@@ -10,7 +18,7 @@ function Home() {
       </Head>
 
       <Center>
-        <Heading size="lg">I am home page!</Heading>
+        <Heading size="lg">{welcomeMsg}</Heading>
       </Center>
     </>
   );
